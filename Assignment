@@ -1,4 +1,4 @@
-// Creating books table 
+-- Creating books table 
 
 CREATE TABLE books(
 bookID INT PRIMARY KEY AUTO_INCREMENT,
@@ -8,7 +8,7 @@ genre VARCHAR(25),
 price DECIMAL(5,2),
 quantity_in_stock INT);
  
-// Creating customers table
+-- Creating customers table
 
 CREATE TABLE customers (
     customerID INT PRIMARY KEY AUTO_INCREMENT,
@@ -17,7 +17,7 @@ CREATE TABLE customers (
     phone VARCHAR(20)
 );
 
-// Creating sales table 
+-- Creating sales table 
 
 CREATE TABLE sales(
 saleID INT PRIMARY KEY AUTO_INCREMENT,
@@ -27,7 +27,7 @@ quantity_sold INT,
 total_price DECIMAL(5,2),
 date_of_sale DATE);
 
-// Adding data to the books table
+-- Adding data to the books table
 
 INSERT INTO books (bookID, title, author, genre, price, quantity_in_stock)
 VALUES
@@ -44,7 +44,7 @@ VALUES
 (11, 'Think and grow rich', 'Napoleon Hill', 'personal development', 28.64, 163);
 
 
-//Adding data to the customers table
+--Adding data to the customers table
 
 INSERT INTO customers (name, email, phone)
 VALUES
@@ -54,7 +54,7 @@ VALUES
 ('Eve Williams', 'eve.williams@example.com', '789-012-3456'),
 ('Charlie Brown', 'charlie.brown@example.com', '111-222-3333');
 
-//Adding data to the sales table
+--Adding data to the sales table
 
 INSERT INTO sales (bookID, customerID, quantity_sold, total_price, date_of_sale)
 VALUES
@@ -64,7 +64,7 @@ VALUES
 (6, 4, 4, 125.64, '2023-03-04'),
 (2, 5, 15, 206.25, '2023-07-07');
 
-//Retrieve a list of all books sold, including the book title, customer
+--Retrieve a list of all books sold, including the book title, customer
 name, and date of sale.
 
 SELECT saleID,title,name,date_of_sale
@@ -72,7 +72,7 @@ FROM sales INNER JOIN customers
 ON sales.customerID = customers.customerID
 INNER JOIN books ON sales.bookID = books.bookID;
 
-// Find the total revenue generated from each genre of books.
+-- Find the total revenue generated from each genre of books.
 
 SELECT books.genre, SUM( total_price) AS total_revenue
 FROM sales
@@ -93,4 +93,7 @@ BEGIN
 END;
 $$
 DELIMITER ;
+
+
+
 
