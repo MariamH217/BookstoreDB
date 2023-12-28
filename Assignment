@@ -1,0 +1,96 @@
+// Creating books table 
+
+CREATE TABLE books(
+bookID INT PRIMARY KEY AUTO_INCREMENT,
+title VARCHAR(50),
+author VARCHAR(25),
+genre VARCHAR(25),
+price DECIMAL(5,2),
+quantity_in_stock INT);
+ 
+// Creating customers table
+
+CREATE TABLE customers (
+    customerID INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50),
+    email VARCHAR(100),
+    phone VARCHAR(20)
+);
+
+// Creating sales table 
+
+CREATE TABLE sales(
+saleID INT PRIMARY KEY AUTO_INCREMENT,
+bookID INT, FOREIGN KEY(bookID) REFERENCES books(bookID),
+customerID INT, FOREIGN KEY(customerID) REFERENCES customers(customerID),
+quantity_sold INT,
+total_price DECIMAL(5,2),
+date_of_sale DATE);
+
+// Adding data to the books table
+
+INSERT INTO books (bookID, title, author, genre, price, quantity_in_stock)
+VALUES
+(1, 'Monk who sold his ferrari', 'Robin Sharma', 'personal development', 15.25, 71),
+(2, 'Death in the clouds', 'Agatha Christie', 'detective', 13.75, 104),
+(3, 'Atomic Habits', 'James Clear', 'personal development', 17.32, 85),
+(4, 'The picture of Dorian Grey', 'Oscar Wilde', 'philosophical novel', 8.36, 41),
+(5, 'A song of Ice and Fire', 'George Martin', 'fantasy novel', 35.85, 171),
+(6, 'Harry Potter and the half-blood prince', 'J.K. Rowling', 'fantasy novel', 31.41, 210),
+(7, 'The WHY cafe', 'John Strelecky', 'novel', 12.95, 21),
+(8, 'The Lord of the rings', 'Ronald Reuel Tolkien', 'fantasy novel', 29.37, 64),
+(9, 'The Great Gatsby', 'Scott Fitzgerald', 'drama', 14.89, 52),
+(10, 'The Alchemist', 'Paulo Coelho', 'novel', 20.17, 37),
+(11, 'Think and grow rich', 'Napoleon Hill', 'personal development', 28.64, 163);
+
+
+//Adding data to the customers table
+
+INSERT INTO customers (name, email, phone)
+VALUES
+('John Doe', 'john.doe@example.com', '123-456-7890'),
+('Alice Smith', 'alice.smith@example.com', '987-654-3210'),
+('Bob Johnson', 'bob.johnson@example.com', '555-123-4567'),
+('Eve Williams', 'eve.williams@example.com', '789-012-3456'),
+('Charlie Brown', 'charlie.brown@example.com', '111-222-3333');
+
+//Adding data to the sales table
+
+INSERT INTO sales (bookID, customerID, quantity_sold, total_price, date_of_sale)
+VALUES
+(1, 1, 9, 137.25, '2023-07-03'),
+(5, 2, 7, 250.95, '2023-01-08'),
+(7, 3, 14, 220.15, '2023-04-05'),
+(6, 4, 4, 125.64, '2023-03-04'),
+(2, 5, 15, 206.25, '2023-07-07');
+
+//Retrieve a list of all books sold, including the book title, customer
+name, and date of sale.
+
+SELECT saleID,title,name,date_of_sale
+FROM sales INNER JOIN customers
+ON sales.customerID = customers.customerID
+INNER JOIN books ON sales.bookID = books.bookID;
+
+// Find the total revenue generated from each genre of books.
+
+SELECT books.genre, SUM( total_price) AS total_revenue
+FROM sales
+RIGHT JOIN books ON sales.bookID = books.bookID
+GROUP BY books.genre;
+
+
+--Trigger
+
+DELIMITER $$
+CREATE TRIGGER update_quantity_in_stock
+AFTER INSERT ON sales
+FOR EACH ROW
+BEGIN
+    UPDATE books
+    SET quantity_in_stock = quantity_in_stock - NEW.quantity_sold
+    WHERE bookID = NEW.bookID;
+END;
+$$
+DELIMITER ;
+
